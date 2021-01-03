@@ -561,7 +561,7 @@ run_badblocks_test() {
   if [ "${DISK_TYPE}" != "SSD" ]; then
     dry_run_wrapper "badblocks -b 4096 -wsv -e ${BB_E_ARG} -o \"${BB_File}\" \"${DRIVE}\""
   else
-    log_info "SKIPPED: badblocks for ${DISK_TYPE} device"
+    dry_run_wrapper "sudo zpool create -f -o ashift=12 -O logbias=throughput -O compress=lz4 -O dedup=off -O atime=off -O xattr=sa TESTR001 \"${DRIVE}\" && sudo zpool export TESTR001 && sudo zpool import -d \"${DRIVE}\" TESTR001 && sudo chmod -R ugo+rw /TESTR001 && sudo f3write /TESTR001 && sudo f3read /TESTR001 && sudo zpool scrub TESTR001"
   fi
   log_info "Finished badblocks test"
 }
